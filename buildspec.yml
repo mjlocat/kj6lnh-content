@@ -1,0 +1,40 @@
+version: 0.2
+
+# Built by AWS CodeBuild (image: aws/codebuild/standard:7.0).
+# Required environment variables (injected by the CodeBuild project in Terraform):
+#   SITE_BUCKET                 - target S3 bucket for the rendered site
+#   CLOUDFRONT_DISTRIBUTION_ID  - distribution to invalidate after deploy
+
+env:
+  variables:
+    HUGO_VERSION: "0.162.1"
+    # Pinned PaperMod commit (matches the local submodule). CodePipeline source
+    # artifacts do not include git submodule contents, so the theme is fetched here.
+    PAPERMOD_COMMIT: "154d006e0182dfc7da38008323976b02e6bfab4a"
+
+phases:
+  install:
+    commands:
+      - echo "Installing Hugo extended ${HUGO_VERSION}"
+      - curl -sSL "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz" -o /tmp/hugo.tar.gz
+      - tar -xzf /tmp/hugo.tar.gz -C /usr/local/bin hugo
+      - hugo version
+  pre_build:
+    commands:
+      - echo "Fetching PaperMod theme @ ${PAPERMOD_COMMIT}"
+      - rm -rf themes/PaperMod
+      - git clone --quiet https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod
+      - git -C themes/PaperMod checkout --quiet "${PAPERMOD_COMMIT}"
+  build:
+    commands:
+      - hugo --gc --minify --baseURL "https://kj6lnh.org/"
+  post_build:
+    commands:
+      # Fail the build if no content was produced (guards against a bad deploy wiping the site).
+      - test -f public/index.html
+      - echo "Syncing static assets (long cache) to s3://${SITE_BUCKET}"
+      - aws s3 sync public/ "s3://${SITE_BUCKET}/" --delete --exclude "*.html" --exclude "*.xml" --exclude "*.txt" --exclude "*.json" --cache-control "public,max-age=31536000,immutable"
+      - echo "Syncing HTML/feeds (short cache) to s3://${SITE_BUCKET}"
+      - aws s3 sync public/ "s3://${SITE_BUCKET}/" --delete --exclude "*" --include "*.html" --include "*.xml" --include "*.txt" --include "*.json" --cache-control "public,max-age=300,must-revalidate"
+      - echo "Invalidating CloudFront ${CLOUDFRONT_DISTRIBUTION_ID}"
+      - aws cloudfront create-invalidation --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" --paths "/*"

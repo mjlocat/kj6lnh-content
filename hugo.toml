@@ -1,0 +1,71 @@
+baseURL = "https://kj6lnh.org/"
+languageCode = "en-us"
+title = "KJ6LNH"
+theme = "PaperMod"
+enableRobotsTXT = true
+enableEmoji = true
+
+# Canonical clean URLs (e.g. /kinetic-watch-charger/). Old WordPress dated URLs
+# are preserved via per-post `aliases` front matter.
+[permalinks]
+  posts = "/:slug/"
+
+[pagination]
+  pagerSize = 10
+
+[params]
+  description = "Amateur radio, electronics, and computer projects by Michael Locatelli (KJ6LNH)."
+  author = "Michael Locatelli"
+  defaultTheme = "auto"
+  ShowReadingTime = true
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowToc = false
+  ShowFullTextinRSS = true
+
+  [params.homeInfoParams]
+    Title = "KJ6LNH"
+    Content = "Amateur radio, electronics, and computer projects by Michael Locatelli."
+
+# Header navigation
+[[menu.main]]
+  identifier = "home"
+  name = "Home"
+  url = "/"
+  weight = 10
+[[menu.main]]
+  identifier = "electronics"
+  name = "Electronics"
+  url = "/categories/electronics/"
+  weight = 20
+[[menu.main]]
+  identifier = "hamradio"
+  name = "Ham Radio"
+  url = "/categories/ham-radio/"
+  weight = 30
+[[menu.main]]
+  identifier = "computers"
+  name = "Computers"
+  url = "/categories/computers/"
+  weight = 40
+[[menu.main]]
+  identifier = "about"
+  name = "About"
+  url = "/about/"
+  weight = 50
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+[markup]
+  [markup.highlight]
+    noClasses = false
+    codeFences = true
+  [markup.goldmark.renderer]
+    unsafe = true   # allow raw HTML carried over from migrated WordPress posts
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
