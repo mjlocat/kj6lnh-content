@@ -3,7 +3,7 @@ title: "Saved by the Soap: Recovering from a 3D Printer 'Blob of Death' Just in 
 date: 2026-07-17T08:00:00-07:00
 draft: false
 tags: ["3D Printing", "Ender 3 V3 SE", "DIY", "Troubleshooting"]
-categories: ["Hardware"]
+categories: ["Electronics"]
 summary: "When a massive PLA filament blob entombed my hotend, I had to completely rebuild my printer's toolhead to save a time-sensitive project of 220 custom miniature bows."
 ---
 
@@ -51,8 +51,8 @@ Isopropyl alcohol is fine for quick wipes, but it often just spreads skin oils a
 
 ### 3. Slicer Tweaks for Micro-Adhesion
 To give the tiny bows the best possible foundation, I adjusted my slicer settings:
-*   **Layer Height:** Bumped up from a microscopic $0.10\text{ mm}$ to a sturdier **$0.20\text{ mm}$**. This doubled my mechanical "squish" on the first layer and left more clearance for the nozzle to pass over completed areas.
-*   **Speed:** Dropped the initial layer speed down to a crawl at **$20\text{ mm/s}$**.
+*   **Layer Height:** Bumped up from a microscopic 0.10 mm to a sturdier **0.20 mm**. This doubled my mechanical "squish" on the first layer and left more clearance for the nozzle to pass over completed areas.
+*   **Speed:** Dropped the initial layer speed down to a crawl at **20 mm/s**.
 *   **Brim:** Configured a generous brim to act as a physical anchor for each tiny piece.
 *   **Fan Control:** Kept the cooling fan off until layer 4 to prevent early thermal warping.
 
